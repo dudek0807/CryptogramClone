@@ -6,14 +6,12 @@ const LoginPage = () => {
 
   const handleLoginSuccess = (token: string) => {
     setToken(token);
-    alert('Zalogowano pomyślnie');
-    // tutaj możesz przekierować użytkownika lub ustawić globalny stan
   };
 
   return (
     <div>
       <Login onLoginSuccess={handleLoginSuccess} />
-      {token && <p>Jesteś zalogowany. Token: {token}</p>}
+      {token && <p>You are logged in.</p>}
     </div>
   );
 };

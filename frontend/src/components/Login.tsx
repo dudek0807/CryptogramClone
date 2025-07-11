@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 
 interface LoginProps {
   onLoginSuccess: (token: string) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
-  // Dla debugowania - zobacz czy zmienna jest dostępna w komponencie
-  useEffect(() => {
-    console.log('BACKEND_URL in Login:', process.env.REACT_APP_BACKEND_URL);
-  }, []);
-
-  const backendUrl = process.env.REACT_APP_BACKEND_URL //|| 'http://localhost:3000';
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,28 +21,28 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
     try {
       const res = await fetch(`${backendUrl}/api/users/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.token) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
         onLoginSuccess(data.token);
-        setMessage('Zalogowano pomyślnie');
+        navigate("/");
       } else {
-        setMessage(data.message || 'Niepoprawne dane');
+        setMessage(data.message || "Incorrect data");
       }
     } catch {
-      setMessage('Błąd sieci');
+      setMessage("Network error");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Logowanie</h2>
+    <form className="login-form" onSubmit={handleSubmit}>
+      <h2>Login</h2>
       {message && <p>{message}</p>}
       <div>
         <label>Email:</label>
@@ -51,19 +50,19 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           type="email"
           required
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
-        <label>Hasło:</label>
+        <label>Password:</label>
         <input
           type="password"
           required
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button type="submit">Zaloguj się</button>
+      <button type="submit">Log in</button>
     </form>
   );
 };

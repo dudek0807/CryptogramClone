@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Register.css";
 
 interface RegisterProps {
   onRegisterSuccess: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:3000";
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,27 +21,24 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
 
     try {
       const res = await fetch(`${backendUrl}/api/users/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, username, password }),
       });
 
-      const data = await res.json();
-
       if (res.ok) {
-        setMessage('Rejestracja udana! Możesz się teraz zalogować.');
+        setMessage("Register success! You can now log in.");
         onRegisterSuccess();
-      } else {
-        setMessage(data.message || 'Coś poszło nie tak.');
+        navigate("/login");
       }
     } catch {
-      setMessage('Błąd sieci');
+      setMessage("Network error");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Rejestracja</h2>
+    <form className="register-form" onSubmit={handleSubmit}>
+      <h2>Register</h2>
       {message && <p>{message}</p>}
       <div>
         <label>Email:</label>
@@ -46,29 +46,29 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
           type="email"
           required
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
-        <label>Nazwa użytkownika:</label>
+        <label>Username:</label>
         <input
           type="text"
           required
           value={username}
-          onChange={e => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
       <div>
-        <label>Hasło:</label>
+        <label>Password:</label>
         <input
           type="password"
           required
           minLength={6}
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button type="submit">Zarejestruj się</button>
+      <button type="submit">Register</button>
     </form>
   );
 };

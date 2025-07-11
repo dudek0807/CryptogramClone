@@ -11,7 +11,7 @@ const RegisterPage = () => {
   return (
     <div>
       <Register onRegisterSuccess={handleRegisterSuccess} />
-      {registered && <p style={{ color: 'green' }}>Konto zostało utworzone! Możesz się teraz zalogować.</p>}
+      {registered && <p style={{ color: 'green' }}>Account created. You can now log in.</p>}
     </div>
   );
 };

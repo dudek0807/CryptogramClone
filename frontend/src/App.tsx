@@ -1,14 +1,20 @@
-import { Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage';
+import { Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import HomePage from "./pages/HomePage";
+import Navbar from "./components/Navbar";
+import "./styles/App.css"
 
 function App() {
-   console.log('BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </>
   );
 }
 
