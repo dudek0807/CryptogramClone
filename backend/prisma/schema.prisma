@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  username     String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  games        Game[]
+}
+
+model Game {
+  id         Int        @id @default(autoincrement())
+  user       User?      @relation(fields: [userId], references: [id])
+  userId     Int?
+  startedAt  DateTime   @default(now())
+  finishedAt DateTime?
+  score      Int        @default(0)
+  status     String     @default("active")
+
+  cryptograms Cryptogram[]
+}
+
+model Cryptogram {
+  id            Int       @id @default(autoincrement())
+  game          Game      @relation(fields: [gameId], references: [id])
+  gameId        Int
+  originalText  String
+  encryptedText String
+  solvedText    String?
+  createdAt     DateTime  @default(now())
+
+  attempts      Attempt[]
+}
+
+model Attempt {
+  id           Int       @id @default(autoincrement())
+  cryptogram   Cryptogram @relation(fields: [cryptogramId], references: [id])
+  cryptogramId Int
+  guessedChar  String    @db.Char(1)
+  correct      Boolean
+  createdAt    DateTime  @default(now())
+}
